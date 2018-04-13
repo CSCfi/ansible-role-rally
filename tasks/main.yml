@@ -40,6 +40,7 @@
     - "libxml2-dev"
     - "libxslt-dev"
     - "libpq-dev"
+    - "iputils-ping"
   when: ansible_distribution == 'Ubuntu' and not rally_bin.stat.exists
 
 - name: Create group for Rally
@@ -93,7 +94,7 @@
     state: present
 
 - name: Clean up
-  yum:
+  package:
     name: "{{item}}"
     state: absent
   with_items:
