@@ -120,8 +120,8 @@ function test_playbook(){
 }
 function extra_tests(){
 
-    echo "TEST: ls /etc/puppet/*"
-    ls /etc/puppet/
+    echo "TEST: cat /home/rally/rally/etc/rally/rally.conf"
+    cat /home/rally/rally/etc/rally/rally.conf
 
 }
 
@@ -137,7 +137,7 @@ function main(){
     test_playbook_syntax
     test_playbook
     test_playbook_check
-#    extra_tests
+    extra_tests
 
 }
 

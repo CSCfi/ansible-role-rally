@@ -3,6 +3,9 @@
  - name: configure rally
    hosts: login
    connection: local
+   vars:
+     - rally_tempest_swift_operator_role: Member
+     - rally_tempest_swift_reseller_admin_role: ResellerAdmin
    roles:
      - ansible-role-rally
 ...
