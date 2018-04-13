@@ -76,7 +76,7 @@
 - name: Get Rally installation script
   get_url:
     url: https://raw.githubusercontent.com/openstack/rally/master/install_rally.sh
-    mode: 0776
+    mode: 0774
     owner: rally
     group: rally
     dest: /tmp
@@ -103,9 +103,13 @@
     - "libxml2-devel"
     - "libxslt-devel"
     - "gcc"
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' and not rally_bin.stat.exists
+  become_user: root
+  when:
+    - (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+    - not rally_bin.stat.exists
 
 - name: Rally configure swift operator role
+  become_user: rally
   lineinfile: 
     path: "/home/rally/rally/etc/rally/rally.conf"
     regexp: "swift_operator_role"
@@ -113,6 +117,7 @@
   when: rally_tempest_swift_operator_role is defined
 
 - name: Rally configure swift reseller admin role
+  become_user: rally
   lineinfile: 
     path: "/home/rally/rally/etc/rally/rally.conf"
     regexp: "swift_reseller_admin_role"
