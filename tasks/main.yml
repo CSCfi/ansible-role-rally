@@ -25,6 +25,9 @@
     - "gcc"
     - "libxml2-devel"
     - "libxslt-devel"
+    - "gmp-devel"
+    - "postgresql-devel"
+    - "redhat-rpm-config"
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' and not rally_bin.stat.exists
 
 - name: Install dependencies Ubuntu
@@ -46,9 +49,6 @@
     - "libxslt-dev"
     - "libpq-dev"
     - "iputils-ping"
-    - "gmp-devel"
-    - "postgresql-devel"
-    - "redhat-rpm-config"
   when: ansible_distribution == 'Ubuntu' and not rally_bin.stat.exists
 
 - name: Create group for Rally
