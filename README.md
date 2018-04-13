@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/CSCfi/ansible-role-rally.svg?branch=master)](https://travis-ci.org/CSCfi/ansible-role-rally)
+
 # ansible-role-rally
 
 This role does a basic installation of openstack-rally for the "rally" user. Currenly it has minor configuration capabilities for the rally tempest options.

@@ -1,59 +1,84 @@
 ---
 
 - name: Check if Rally is installed - check if we have rally/bin, pass installation if it exists
-  stat: path=/home/rally/rally/bin/rally
+  stat:
+    path: /home/rally/rally/bin/rally
   register: rally_bin
 
 - name: Install dependencies Centos
-  yum: name={{item}} state=installed
+  yum:
+    name: "{{item}}"
+    state: installed
   with_items:
-  - "python2-pip"
-  - "wget"
-  - "sqlite"
-  - "python-devel"
-  - "openssl-devel"
-  - "git"
-  - "libffi-devel"
-  - "gcc"
-  - "libxml2-devel"
-  - "libxslt-devel"
+    - "python2-pip"
+    - "wget"
+    - "sqlite"
+    - "python-devel"
+    - "openssl-devel"
+    - "git"
+    - "libffi-devel"
+    - "gcc"
+    - "libxml2-devel"
+    - "libxslt-devel"
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' and not rally_bin.stat.exists
 
 - name: Install dependencies Ubuntu
-  apt: name={{item}} state=installed
+  apt: 
+    name: "{{item}}" 
+    state: installed
   with_items:
-  - "python-pip"
-  - "python-setuptools"
-  - "wget"
-  - "sqlite"
-  - "python-dev"
-  - "libpython-dev"
-  - "libssl-dev"
-  - "git"
-  - "libffi-dev"
-  - "build-essential"
-  - "libxml2-dev"
-  - "libxslt-dev"
-  - "libpq-dev"
+    - "python-pip"
+    - "python-setuptools"
+    - "wget"
+    - "sqlite"
+    - "python-dev"
+    - "libpython-dev"
+    - "libssl-dev"
+    - "git"
+    - "libffi-dev"
+    - "build-essential"
+    - "libxml2-dev"
+    - "libxslt-dev"
+    - "libpq-dev"
   when: ansible_distribution == 'Ubuntu' and not rally_bin.stat.exists
 
 - name: Create group for Rally
-  group: name=rally state=present system=yes
+  group: 
+    name: rally 
+    state: present 
+    system: yes
   when: not rally_bin.stat.exists
 
 - name: Create user for Rally
-  user: name=rally groups=rally shell=/bin/bash state=present system=yes createhome=yes home=/home/rally
+  user:
+    name: rally
+    groups: rally
+    shell: /bin/bash
+    state: present
+    system: yes
+    createhome: yes
+    home: /home/rally
   when: not rally_bin.stat.exists
 
 - name: Create Rally directories
-  file: path={{ item.path }} state=directory owner=rally group=rally mode=0750
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: rally
+    group: rally
+    mode: 0750
   with_items:
     - path: "/etc/rally"
     - path: "/home/rally"
   when: not rally_bin.stat.exists
 
 - name: Get Rally installation script
-  get_url: url=https://raw.githubusercontent.com/openstack/rally/master/install_rally.sh mode=0776 owner=rally group=rally dest=/tmp
+  get_url:
+    url: https://raw.githubusercontent.com/openstack/rally/master/install_rally.sh
+    mode: 0776
+    owner: rally
+    group: rally
+    dest: /tmp
   when: not rally_bin.stat.exists
 
 - name: Install rally
@@ -68,13 +93,15 @@
     state: present
 
 - name: Clean up
-  yum: name={{item}} state=absent
+  yum:
+    name: "{{item}}"
+    state: absent
   with_items:
-  - "python-devel"
-  - "openssl-devel"
-  - "libxml2-devel"
-  - "libxslt-devel"
-  - "gcc"
+    - "python-devel"
+    - "openssl-devel"
+    - "libxml2-devel"
+    - "libxslt-devel"
+    - "gcc"
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' and not rally_bin.stat.exists
 
 - name: Rally configure swift operator role
