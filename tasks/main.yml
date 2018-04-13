@@ -61,6 +61,12 @@
   command: /tmp/install_rally.sh
   when: not rally_bin.stat.exists
 
+- name: Install rally-openstack plugin pre-requisite
+  pip:
+    name: rally-openstack
+    virtualenv: "/home/rally/rally"
+    state: present
+
 - name: Clean up
   yum: name={{item}} state=absent
   with_items:
