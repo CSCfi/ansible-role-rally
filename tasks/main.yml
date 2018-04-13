@@ -41,6 +41,9 @@
     - "libxslt-dev"
     - "libpq-dev"
     - "iputils-ping"
+    - "gmp-devel"
+    - "postgresql-devel"
+    - "redhat-rpm-config"
   when: ansible_distribution == 'Ubuntu' and not rally_bin.stat.exists
 
 - name: Create group for Rally
@@ -85,6 +88,7 @@
 - name: Install rally
   become_user: rally
   command: /tmp/install_rally.sh
+  register: reg_install_rally
   when: not rally_bin.stat.exists
 
 - name: Install rally-openstack plugin pre-requisite
@@ -103,10 +107,9 @@
     - "libxml2-devel"
     - "libxslt-devel"
     - "gcc"
-  become_user: root
   when:
     - (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
-    - not rally_bin.stat.exists
+    - reg_install_rally is success
 
 - name: Rally configure swift operator role
   become_user: rally
