@@ -71,7 +71,7 @@
 
 - name: Create Rally directories
   file:
-    path: "{{ item.path }}"
+    path: "{{item.path}}"
     state: directory
     owner: rally
     group: rally
@@ -105,7 +105,7 @@
     virtualenv: "/home/rally/rally"
     state: present
 
-- name: Clean up
+- name: Clean up devel packages on EL if rally has been successfully installed
   package:
     name: "{{item}}"
     state: absent
@@ -116,7 +116,7 @@
     - "libxslt-devel"
     - "gcc"
   when:
-    - (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+    - ansible_os_family == "RedHat"
     - reg_install_rally is success
 
 - name: Rally configure swift operator role
@@ -125,7 +125,7 @@
   lineinfile: 
     path: "/home/rally/rally/etc/rally/rally.conf"
     regexp: "swift_operator_role"
-    line: "swift_operator_role = {{ rally_tempest_swift_operator_role }}"
+    line: "swift_operator_role = {{rally_tempest_swift_operator_role}}"
   when: rally_tempest_swift_operator_role is defined
 
 - name: Rally configure swift reseller admin role
@@ -134,5 +134,5 @@
   lineinfile: 
     path: "/home/rally/rally/etc/rally/rally.conf"
     regexp: "swift_reseller_admin_role"
-    line: "swift_reseller_admin_role = {{ rally_tempest_swift_reseller_admin_role }}"
+    line: "swift_reseller_admin_role = {{rally_tempest_swift_reseller_admin_role}}"
   when: swift_reseller_admin_role is defined
