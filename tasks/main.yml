@@ -135,4 +135,4 @@
     path: "/home/rally/rally/etc/rally/rally.conf"
     regexp: "swift_reseller_admin_role"
     line: "swift_reseller_admin_role = {{rally_tempest_swift_reseller_admin_role}}"
-  when: swift_reseller_admin_role is defined
+  when: rally_tempest_swift_reseller_admin_role is defined
