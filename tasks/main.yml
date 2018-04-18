@@ -105,20 +105,6 @@
     virtualenv: "/home/rally/rally"
     state: present
 
-- name: Clean up devel packages on EL if rally has been successfully installed
-  package:
-    name: "{{item}}"
-    state: absent
-  with_items:
-    - "python-devel"
-    - "openssl-devel"
-    - "libxml2-devel"
-    - "libxslt-devel"
-    - "gcc"
-  when:
-    - ansible_os_family == "RedHat"
-    - reg_install_rally is success
-
 - name: Rally configure swift operator role
   become: True
   become_user: rally
