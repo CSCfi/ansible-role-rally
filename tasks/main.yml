@@ -1,64 +1,102 @@
 ---
 
 - name: Check if Rally is installed - check if we have rally/bin, pass installation if it exists
-  stat: path=/home/rally/rally/bin/rally
+  stat:
+    path: /home/rally/rally/bin/rally
   register: rally_bin
 
+- name: print rally_bin when verbosity is 1
+  debug:
+    var: rally_bin
+    verbosity: 1
+
 - name: Install dependencies Centos
-  yum: name={{item}} state=installed
+  yum:
+    name: "{{item}}"
+    state: installed
   with_items:
-  - "python2-pip"
-  - "wget"
-  - "sqlite"
-  - "python-devel"
-  - "openssl-devel"
-  - "git"
-  - "libffi-devel"
-  - "gcc"
-  - "libxml2-devel"
-  - "libxslt-devel"
+    - "python2-pip"
+    - "wget"
+    - "sqlite"
+    - "python-devel"
+    - "openssl-devel"
+    - "git"
+    - "libffi-devel"
+    - "gcc"
+    - "libxml2-devel"
+    - "libxslt-devel"
+    - "gmp-devel"
+    - "postgresql-devel"
+    - "redhat-rpm-config"
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' and not rally_bin.stat.exists
 
 - name: Install dependencies Ubuntu
-  apt: name={{item}} state=installed
+  apt:
+    name: "{{item}}"
+    state: installed
   with_items:
-  - "python-pip"
-  - "python-setuptools"
-  - "wget"
-  - "sqlite"
-  - "python-dev"
-  - "libpython-dev"
-  - "libssl-dev"
-  - "git"
-  - "libffi-dev"
-  - "build-essential"
-  - "libxml2-dev"
-  - "libxslt-dev"
-  - "libpq-dev"
+    - "python-pip"
+    - "python-setuptools"
+    - "wget"
+    - "sqlite"
+    - "python-dev"
+    - "libpython-dev"
+    - "libssl-dev"
+    - "git"
+    - "libffi-dev"
+    - "build-essential"
+    - "libxml2-dev"
+    - "libxslt-dev"
+    - "libpq-dev"
+    - "iputils-ping"
   when: ansible_distribution == 'Ubuntu' and not rally_bin.stat.exists
 
 - name: Create group for Rally
-  group: name=rally state=present system=yes
+  group:
+    name: rally
+    state: present
+    system: yes
   when: not rally_bin.stat.exists
 
 - name: Create user for Rally
-  user: name=rally groups=rally shell=/bin/bash state=present system=yes createhome=yes home=/home/rally
+  user:
+    name: rally
+    groups: rally
+    shell: /bin/bash
+    state: present
+    system: yes
+    createhome: yes
+    home: /home/rally
   when: not rally_bin.stat.exists
 
 - name: Create Rally directories
-  file: path={{ item.path }} state=directory owner=rally group=rally mode=0750
+  file:
+    path: "{{item.path}}"
+    state: directory
+    owner: rally
+    group: rally
+    mode: 0750
   with_items:
     - path: "/etc/rally"
     - path: "/home/rally"
   when: not rally_bin.stat.exists
 
 - name: Get Rally installation script
-  get_url: url=https://raw.githubusercontent.com/openstack/rally/master/install_rally.sh mode=0776 owner=rally group=rally dest=/tmp
+  become: True
+  become_user: rally
+  get_url:
+    url: https://raw.githubusercontent.com/openstack/rally/master/install_rally.sh
+    mode: 0774
+    owner: rally
+    group: rally
+    dest: /tmp
   when: not rally_bin.stat.exists
 
 - name: Install rally
+  become: True
   become_user: rally
   command: /tmp/install_rally.sh
+  register: reg_install_rally
   when: not rally_bin.stat.exists
 
 - name: Install rally-openstack plugin pre-requisite
@@ -67,26 +105,34 @@
     virtualenv: "/home/rally/rally"
     state: present
 
-- name: Clean up
-  yum: name={{item}} state=absent
+- name: Clean up devel packages on EL if rally has been successfully installed
+  package:
+    name: "{{item}}"
+    state: absent
   with_items:
-  - "python-devel"
-  - "openssl-devel"
-  - "libxml2-devel"
-  - "libxslt-devel"
-  - "gcc"
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' and not rally_bin.stat.exists
+    - "python-devel"
+    - "openssl-devel"
+    - "libxml2-devel"
+    - "libxslt-devel"
+    - "gcc"
+  when:
+    - ansible_os_family == "RedHat"
+    - reg_install_rally is success
 
 - name: Rally configure swift operator role
+  become: True
+  become_user: rally
   lineinfile: 
     path: "/home/rally/rally/etc/rally/rally.conf"
     regexp: "swift_operator_role"
-    line: "swift_operator_role = {{ rally_tempest_swift_operator_role }}"
+    line: "swift_operator_role = {{rally_tempest_swift_operator_role}}"
   when: rally_tempest_swift_operator_role is defined
 
 - name: Rally configure swift reseller admin role
+  become: True
+  become_user: rally
   lineinfile: 
     path: "/home/rally/rally/etc/rally/rally.conf"
     regexp: "swift_reseller_admin_role"
-    line: "swift_reseller_admin_role = {{ rally_tempest_swift_reseller_admin_role }}"
-  when: swift_reseller_admin_role is defined
+    line: "swift_reseller_admin_role = {{rally_tempest_swift_reseller_admin_role}}"
+  when: rally_tempest_swift_reseller_admin_role is defined
