@@ -107,6 +107,14 @@
     virtualenv: "/home/rally/rally"
     state: present
 
+- name: Update PrettyTables
+  become: True
+  become_user: rally
+  pip:
+    name: PrettyTable
+    virtualenv: "/home/rally/rally"
+    state: latest
+
 - name: Rally configure swift operator role
   become: True
   become_user: rally
