@@ -13,9 +13,9 @@ RUN yum clean all && \
     yum -y install acl sudo && \
     sed -i -e 's/^Defaults.*requiretty/Defaults    !requiretty/' -e 's/^%wheel.*ALL$/%wheel    ALL=(ALL)    NOPASSWD: ALL/' /etc/sudoers && \
     yum -y install PyYAML python-jinja2 python-httplib2 python-keyczar python-paramiko python-setuptools git python-pip && \
-    pip install --upgrade pip && \
+    pip install --upgrade --force-reinstall pip==9.0.3 && \
     pip install requests[security] && \
-    pip install pyrax pysphere boto boto3 passlib dnspython && \
+    pip install passlib dnspython && \
     sh -c 'yum -y remove libffi-devel || yum -y --setopt=tsflags=noscripts remove libffi-devel' && \
     yum -y remove $(rpm -qa "*-devel") && \
     yum -y groupremove "Development tools" && \
@@ -26,9 +26,13 @@ RUN yum clean all && \
 RUN mkdir /etc/ansible/
 RUN echo -e '[local]\nlocalhost\n' > /etc/ansible/hosts
 RUN mkdir /opt/ansible/
-RUN git clone http://github.com/ansible/ansible.git /opt/ansible/ansible
+# Testing https://github.com/ansible/ansible/issues/42117#issuecomment-402960872
+# https://github.com/ansible/ansible/pull/42396
+RUN git clone https://github.com/jborean93/ansible.git /opt/ansible/ansible
+#RUN git clone http://github.com/ansible/ansible.git /opt/ansible/ansible
 WORKDIR /opt/ansible/ansible
 RUN git submodule update --init
+RUN git checkout none_temps
 ENV PATH /opt/ansible/ansible/bin:/bin:/usr/bin:/sbin:/usr/sbin
 ENV PYTHONPATH /opt/ansible/ansible/lib
 ENV ANSIBLE_LIBRARY /opt/ansible/ansible/library
