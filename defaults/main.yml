@@ -5,5 +5,5 @@
 # 
 # rally_tempest_swift_operator_role: Member
 # rally_tempest_swift_reseller_admin_role: ResellerAdmin
-# vallt_rally_db_password: VerySecretPassword
+# vault_rally_db_password: VerySecretPassword
 # rally_database_server: test.example.com
