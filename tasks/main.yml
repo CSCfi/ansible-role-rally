@@ -115,22 +115,18 @@
     virtualenv: "/home/rally/rally"
     state: latest
 
-- name: Rally configure swift operator role
-  become: True
-  become_user: rally
-  ini_file:
-    path: "/home/rally/rally/etc/rally/rally.conf"
-    section: openstack
-    option: swift_operator_role
-    value: "{{rally_tempest_swift_operator_role}}"
-  when: rally_tempest_swift_operator_role is defined
+ - name: Install mysql to pip environment
+   pip:
+     name: PyMySQL
+     virtualenv: "/home/rally/rally"
+     state: present
 
-- name: Rally configure swift reseller admin role
+- name: Add rally settings
   become: True
   become_user: rally
-  ini_file: 
-    path: "/home/rally/rally/etc/rally/rally.conf"
-    section: openstack
-    option: "swift_reseller_admin_role"
-    value: "{{rally_tempest_swift_reseller_admin_role}}"
-  when: rally_tempest_swift_reseller_admin_role is defined
+  template:
+    src: rally.conf.j2
+    dest: "/home/rally/rally/etc/rally/rally.conf"
+    owner: rally
+    group: rally
+    mode: 0600

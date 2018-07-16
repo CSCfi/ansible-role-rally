@@ -1,0 +1,17 @@
+[DEFAULT]
+
+[database]
+
+{% if rally_database_server is defined %}
+connection = "mysql+pymysql://rally:{{ vault_rally_db_password }}@{{ rally_database_server }}/rally"
+{% else %}
+connection = "sqlite:////home/rally/rally/database/rally.sqlite"
+{% endif %}
+
+{% if swift_operator_role is defined %}
+swift_operator_role = {{ rally_tempest_swift_operator_role }}
+{% endif %}
+
+{% if swift_reseller_admin_role is defined %}
+swift_reseller_admin_role = {{ rally_tempest_swift_reseller_admin_role }}
+{% endif %}
