@@ -10,10 +10,10 @@ connection = "sqlite:////home/rally/rally/database/rally.sqlite"
 {% endif %}
 
 [openstack]
-{% if swift_operator_role is defined %}
+{% if rally_tempest_swift_operator_role is defined %}
 swift_operator_role = {{ rally_tempest_swift_operator_role }}
 {% endif %}
 
-{% if swift_reseller_admin_role is defined %}
+{% if rally_tempest_swift_reseller_admin_role is defined %}
 swift_reseller_admin_role = {{ rally_tempest_swift_reseller_admin_role }}
 {% endif %}
