@@ -115,13 +115,15 @@
     virtualenv: "/home/rally/rally"
     state: latest
 
- - name: Install mysql to pip environment
+- name: Install mysql to pip environment
+  become: True
+  become_user: rally
    pip:
      name: PyMySQL
      virtualenv: "/home/rally/rally"
      state: present
 
-- name: Add rally settings
+- name: Add rally config file
   become: True
   become_user: rally
   template:

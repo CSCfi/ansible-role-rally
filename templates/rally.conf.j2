@@ -1,13 +1,15 @@
+# This file is managed by ansible
 [DEFAULT]
 
 [database]
 
 {% if rally_database_server is defined %}
-connection = "mysql+pymysql://rally:{{ vault_rally_db_password }}@{{ rally_database_server }}/rally"
+connection = "mysql+pymysql://{{ rally_mysql_user }}:{{ vault_rally_db_password }}@{{ rally_database_server }}/{{ rally_mysql_database_name }}"
 {% else %}
 connection = "sqlite:////home/rally/rally/database/rally.sqlite"
 {% endif %}
 
+[openstack]
 {% if swift_operator_role is defined %}
 swift_operator_role = {{ rally_tempest_swift_operator_role }}
 {% endif %}
