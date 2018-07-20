@@ -5,3 +5,6 @@
 # 
 # rally_tempest_swift_operator_role: Member
 # rally_tempest_swift_reseller_admin_role: ResellerAdmin
+
+rally_install_version: "master"
+
