@@ -121,7 +121,7 @@
     line: "source /home/rally/rally/bin/activate"
     owner: rally
     state: present
-    insertbefore: EOF
+    insertafter: EOF
     create: True
 
 - name: Rally configure swift operator role
