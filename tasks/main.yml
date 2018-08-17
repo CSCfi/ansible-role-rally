@@ -115,6 +115,15 @@
     virtualenv: "/home/rally/rally"
     state: latest
 
+- name: Update bashrc to automatically source rally env
+  lineinfile:
+    dest: /home/rally/.bashrc
+    line: "source /home/rally/rally/bin/activate"
+    owner: rally
+    state: present
+    insertafter: EOF
+    create: True
+
 - name: Rally configure swift operator role
   become: True
   become_user: rally
