@@ -9,3 +9,4 @@
 # rally_database_server: test.example.com
 rally_mysql_user: rally
 rally_mysql_database_name: rally
+rally_branch: 'stable/0.12'
