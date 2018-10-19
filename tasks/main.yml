@@ -90,6 +90,7 @@
     owner: rally
     group: rally
     dest: /tmp
+    validate_certs: no
   when: not rally_bin.stat.exists
 
 - name: Install rally
