@@ -180,3 +180,9 @@
     option: "swift_reseller_admin_role"
     value: "{{rally_tempest_swift_reseller_admin_role}}"
   when: rally_tempest_swift_reseller_admin_role is defined
+
+- name: Use insecure in openstack calls due to self-signed cert
+  lineinfile:
+    path: /home/rally/rally/bin/openstack
+    insertafter: import\ sys
+    line: "sys.argv.append('--insecure')"
