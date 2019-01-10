@@ -8,3 +8,4 @@
 
 rally_install_version: "master"
 
+rally_openstack_client_http_timeout: "180"

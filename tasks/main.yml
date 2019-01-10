@@ -151,4 +151,4 @@
     path: "/home/rally/rally/etc/rally/rally.conf"
     section: DEFAULT
     option: "openstack_client_http_timeout"
-    value: "180"
+    value: "{{ rally_openstack_client_http_timeout }}"
