@@ -8,4 +8,6 @@
 
 rally_install_version: "master"
 
-rally_openstack_client_http_timeout: "180"
+# Variables for rally.conf with syntax rally_[section]_[variable]
+
+rally_default_openstack_client_http_timeout: "180"
