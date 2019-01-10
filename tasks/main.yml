@@ -143,3 +143,12 @@
     option: "swift_reseller_admin_role"
     value: "{{rally_tempest_swift_reseller_admin_role}}"
   when: rally_tempest_swift_reseller_admin_role is defined
+
+- name: Rally set openstack client timeout
+  become: True
+  become_user: rally
+  ini_file:
+    path: "/home/rally/rally/etc/rally/rally.conf"
+    section: DEFAULT
+    option: "openstack_client_http_timeout"
+    value: "180"
