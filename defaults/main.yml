@@ -7,4 +7,5 @@
 # rally_tempest_swift_reseller_admin_role: ResellerAdmin
 
 rally_install_version: "master"
+#rally_openstack_install_version: "1.3.0"
 

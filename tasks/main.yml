@@ -105,6 +105,7 @@
   pip:
     name: rally-openstack
     virtualenv: "/home/rally/rally"
+    version: "{{ rally_openstack_install_version|default(omit) }}"
     state: present
 
 - name: Update PrettyTables
