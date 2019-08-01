@@ -125,6 +125,21 @@
     insertafter: EOF
     create: True
 
+- name: copy in rally_verify_purger.py
+  copy:
+    src: rally_verify_purger.py
+    dest: /home/rally/rally/bin/rally_verify_purger.py
+    owner: rally
+    mode: 0640
+
+- name: create a daily cronjob to purge old rally verify runs
+  cron:
+    name: "purge_old_rally_verify_runs"
+    special_time: "daily"
+    job: "source /home/rally/rally/bin/activate; python /home/rally/rally/bin/rally_verify_purger.py {{ rally_verify_purger_arguments }}"
+    user: rally
+  when: rally_verify_purger_cron_enabled
+
 - name: Rally configure swift operator role
   become: True
   become_user: rally
