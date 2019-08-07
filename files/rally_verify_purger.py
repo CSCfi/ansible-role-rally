@@ -6,6 +6,7 @@ from datetime import datetime # to compare dates
 import logging # to log to syslog
 import logging.handlers
 import argparse
+import time
 
 import sys # to handle script exit codes
 
@@ -25,9 +26,14 @@ PARSER.add_argument('-n', dest='SAVEBEGIN', type=int,
 PARSER.add_argument('-d', dest='DEBUG', action='store_true',
                     default=False,
                     help='Turn debug on, otherwise logging by default at INFO')
+PARSER.add_argument('-b', dest='BATCH', type=int,
+                    default=5,
+                    help='For every "modulus 5" verify that we purge, sleep 5 seconds')
+
 
 ARGS = PARSER.parse_args()
 
+BATCH = ARGS.BATCH
 PATTERN = ARGS.PATTERN
 SAVENEWER = ARGS.SAVENEWER
 SAVEBEGIN = ARGS.SAVEBEGIN
@@ -39,7 +45,8 @@ NOW = datetime.now()
 
 # Grabs column 2(UUID) and 6(Started at)
 # NOTE: There is a rally python library we could use instead. If you do that, remember to sort
-P = subprocess.Popen("rally verify list|grep %s|cut -d '|' -f2,6|tail -n +%s" % (PATTERN,SAVEBEGIN),
+P = subprocess.Popen("rally verify list|grep %s|cut -d '|' -f2,6|tail -n +%s" %
+		                   (PATTERN, SAVEBEGIN),
                      shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()[0]
 RALLY_VERIFY_LIST = P.split("\n")
 # Get rid of empty strings (because above we split on newline)
@@ -61,6 +68,8 @@ def delete_verifys(rally_verify_list, save_these_many_days):
 	Input: list of lists: [ [ "verifyuuid", "started date" ], [], .. ]
         Output: NA """
 
+    cnt = 0
+
     for verify in rally_verify_list:
         run = verify.split("|")
         uuid = run[0].strip()
@@ -72,6 +81,9 @@ def delete_verifys(rally_verify_list, save_these_many_days):
             # NOTE: There is a rally python library that this rally CLI tool uses
             subprocess.Popen("rally verify delete --uuid %s" % uuid, shell=True)
             LOG.warn("Deleted verify with UUID=%s because it was too old", uuid)
+            cnt = cnt + 1
+            if cnt % BATCH:
+                time.sleep(BATCH)
         else:
             if DEBUG:
                 LOG.info("Did not delete verify with UUID=%s because it is too new", uuid)
