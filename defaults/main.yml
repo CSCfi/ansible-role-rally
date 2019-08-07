@@ -6,7 +6,10 @@
 # rally_tempest_swift_operator_role: Member
 # rally_tempest_swift_reseller_admin_role: ResellerAdmin
 
+# Arguments to install_rally.sh can be found on:
+#  https://rally.readthedocs.io/en/latest/install_and_upgrade/install.html
 rally_install_version: "master"
+rally_install_args: "--branch {{ rally_install_version }}"
 #rally_openstack_install_version: "1.3.0"
 
 rally_verify_purger_cron_enabled: False

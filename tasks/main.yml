@@ -95,7 +95,7 @@
 - name: Install rally
   become: True
   become_user: rally
-  command: /tmp/install_rally.sh --branch "{{rally_install_version}}"
+  command: "/tmp/install_rally.sh {{ rally_install_args }}"
   register: reg_install_rally
   when: not rally_bin.stat.exists
 
