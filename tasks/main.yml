@@ -116,6 +116,14 @@
     virtualenv: "/home/rally/rally"
     state: latest
 
+- name: Update pyasn1
+  become: True
+  become_user: rally
+  pip:
+    name: pyasn1
+    virtualenv: "/home/rally/rally"
+    state: latest
+
 - name: Update bashrc to automatically source rally env
   lineinfile:
     dest: /home/rally/.bashrc
