@@ -124,6 +124,18 @@
     virtualenv: "/home/rally/rally"
     state: latest
 
+# urllib3 1.24.2:
+# - New enough to satisfy requirement from rally-openstack 1.5.0
+# - Old enough to not break requests 2.21.0 which wants urllib3 <1.25
+- name: Update urllib3 to a very specific version
+  become: True
+  become_user: rally
+  pip:
+    name: urllib3
+    virtualenv: "/home/rally/rally"
+    state: present
+    version: 1.24.2
+
 - name: Update bashrc to automatically source rally env
   lineinfile:
     dest: /home/rally/.bashrc
