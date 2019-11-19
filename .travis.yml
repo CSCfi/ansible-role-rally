@@ -49,3 +49,4 @@ after_script:
 
 notifications:
   email: false
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/
