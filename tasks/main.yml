@@ -10,45 +10,18 @@
     var: rally_bin
     verbosity: 1
 
-- name: Install dependencies Centos
+- name: Install dependencies CentOS
   yum:
-    name: "{{item}}"
+    name: "{{ rally_yum_dependencies }}"
     state: installed
-  with_items:
-    - "python2-pip"
-    - "wget"
-    - "sqlite"
-    - "python-devel"
-    - "openssl-devel"
-    - "git"
-    - "libffi-devel"
-    - "gcc"
-    - "libxml2-devel"
-    - "libxslt-devel"
-    - "gmp-devel"
-    - "postgresql-devel"
-    - "redhat-rpm-config"
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux' and not rally_bin.stat.exists
+  when:
+    - (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+    - not rally_bin.stat.exists
 
 - name: Install dependencies Ubuntu
   apt:
-    name: "{{item}}"
-    state: installed
-  with_items:
-    - "python-pip"
-    - "python-setuptools"
-    - "wget"
-    - "sqlite"
-    - "python-dev"
-    - "libpython-dev"
-    - "libssl-dev"
-    - "git"
-    - "libffi-dev"
-    - "build-essential"
-    - "libxml2-dev"
-    - "libxslt-dev"
-    - "libpq-dev"
-    - "iputils-ping"
+    name: "{{ rally_deb_dependencies }}"
+    state: present
   when: ansible_distribution == 'Ubuntu' and not rally_bin.stat.exists
 
 - name: Create group for Rally
@@ -71,7 +44,7 @@
 
 - name: Create Rally directories
   file:
-    path: "{{item.path}}"
+    path: "{{ item.path }}"
     state: directory
     owner: rally
     group: rally
@@ -167,15 +140,15 @@
     path: "/home/rally/rally/etc/rally/rally.conf"
     section: openstack
     option: swift_operator_role
-    value: "{{rally_tempest_swift_operator_role}}"
+    value: "{{ rally_tempest_swift_operator_role }}"
   when: rally_tempest_swift_operator_role is defined
 
 - name: Rally configure swift reseller admin role
   become: True
   become_user: rally
-  ini_file: 
+  ini_file:
     path: "/home/rally/rally/etc/rally/rally.conf"
     section: openstack
     option: "swift_reseller_admin_role"
-    value: "{{rally_tempest_swift_reseller_admin_role}}"
+    value: "{{ rally_tempest_swift_reseller_admin_role }}"
   when: rally_tempest_swift_reseller_admin_role is defined
