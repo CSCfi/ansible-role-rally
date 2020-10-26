@@ -81,13 +81,15 @@
     version: "{{ rally_openstack_install_version|default(omit) }}"
     state: present
 
-- name: Update PrettyTables
+# rally-openstack 1.5.0 needs 'PrettyTable<0.8,>=0.7.2'
+- name: Pin PrettyTables
   become: True
   become_user: rally
   pip:
     name: PrettyTable
     virtualenv: "/home/rally/rally"
-    state: latest
+    state: present
+    version: 0.7.2
 
 - name: Update pyasn1
   become: True
