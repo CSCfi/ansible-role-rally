@@ -3,6 +3,8 @@ language: python
 sudo: required
 dist: trusty
 group: edge
+python:
+  - 3.10
 
 services:
   - docker
