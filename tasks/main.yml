@@ -164,3 +164,9 @@
   with_items:
     - hard
     - soft
+
+- name: Add logrotate.d config for tempest.log
+  become: true
+  tags: logrotate
+  copy:
+     src=rallyverifiers-logrotate dest=/etc/logrotate.d/rallyverifiers-logrotate

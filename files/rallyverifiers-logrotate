@@ -1,0 +1,7 @@
+/home/rally/.rally/verification/*/*/tempest.log {
+    rotate 5
+    compress
+    missingok
+    weekly
+    create 0644 rally users
+}
