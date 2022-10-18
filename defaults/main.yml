@@ -31,7 +31,7 @@ rally_yum_dependencies:
   - "redhat-rpm-config"
 
 rally_deb_dependencies:
-  - "python-pip"
+  - "python3-pip"
   - "python-setuptools"
   - "wget"
   - "sqlite"
