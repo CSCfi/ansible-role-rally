@@ -16,7 +16,7 @@ RUN yum clean all && \
 
 RUN mkdir /etc/ansible/
 RUN echo -e '[local]\nlocalhost' > /etc/ansible/hosts
-RUN pip install ansible==2.5.5
+RUN pip install ansible==2.9.1,<2.10
 RUN ansible --version
 
 CMD ["/bin/bash"]
