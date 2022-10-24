@@ -10,6 +10,7 @@
 #  https://rally.readthedocs.io/en/latest/install_and_upgrade/install.html
 rally_install_version: "master"
 rally_install_args: "--branch {{ rally_install_version }}"
+rally_install_upstream: "openstack"
 #rally_openstack_install_version: "1.3.0"
 
 rally_verify_purger_cron_enabled: False

@@ -16,6 +16,7 @@ RUN yum clean all && \
 
 RUN mkdir /etc/ansible/
 RUN echo -e '[local]\nlocalhost' > /etc/ansible/hosts
+RUN pip install cryptography==2.8 bcrypt==3.1.7 PyNaCl==1.3.0
 RUN pip install ansible==2.5.5
 RUN ansible --version
 
