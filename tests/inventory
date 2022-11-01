@@ -1,7 +1,7 @@
+localhost
+
 [all:vars]
 rally_install_version: "v1.6.0"
-
-localhost
 
 [login]
 localhost
