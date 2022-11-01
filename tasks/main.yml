@@ -58,7 +58,7 @@
   become: True
   become_user: rally
   get_url:
-    url: https://raw.githubusercontent.com/cscfi/rally/Python27/install_rally.sh
+    url: https://raw.githubusercontent.com/openstack/rally/master/install_rally.sh
     mode: 0774
     owner: rally
     group: rally
