@@ -1,4 +1,8 @@
 localhost
 
+[all:vars]
+rally_install_version=Python27
+rally_install_upstream=cscfi
+
 [login]
 localhost

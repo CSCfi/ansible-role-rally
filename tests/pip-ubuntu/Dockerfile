@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 # You can change the FROM Instruction to your existing images if you like and build it with same tag
 ENV container docker
 ENV LC_ALL C
@@ -35,8 +35,10 @@ RUN \
   apt-get install -y software-properties-common && \
   apt-get install -y byobu curl git htop man unzip vim wget python-pip tree && \
   apt-get install -y libyaml-dev python-dev python-jinja2 python-httplib2 python-keyczar python-paramiko python-setuptools python3-setuptools && \
-  apt-get install -y libffi-dev libssl-dev && \
-  pip install setuptools pyrax pysphere boto passlib dnspython
+  apt-get install -y libffi-dev libssl-dev
+
+RUN pip install cryptography==2.8 bcrypt==3.1.7 PyNaCl==1.3.0 wheel
+RUN pip install setuptools pysphere boto passlib dnspython
 
 RUN mkdir /etc/ansible/
 RUN echo -e '[local]\nlocalhost' > /etc/ansible/hosts
