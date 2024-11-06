@@ -6,7 +6,7 @@
   when: not data_path_is_volume
 
 - name: Ensure data path volume exists
-  containers.podman.podman_volume::
+  containers.podman.podman_volume:
     state: present
     name: "{{ data_path }}"
   when: data_path_is_volume
