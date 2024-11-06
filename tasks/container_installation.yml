@@ -1,0 +1,32 @@
+---
+- name: Ensure data path directory exists
+  file:
+    path: "{{ data_path }}"
+    owner: 65500
+  when: not data_path_is_volume
+
+- name: Ensure data path volume exists
+  podman_volume:
+    state: present
+    name: "{{ data_path }}"
+  when: data_path_is_volume
+
+# docker run -v /var/lib/rally_container:/home/rally/.rally xrally/xrally db create
+- name: Initialize database for Rally
+  podman_container:
+    command: 'db create'
+    name: "{{ container_name }}"
+    image: "{{ container_image }}"
+    volume:
+      - "{{ data_path }}:/home/rally/.rally"
+    state: started
+  when: not data_path_is_volume
+
+- name: Run Rally container
+  podman_container:
+    name: "{{ container_name }}"
+    image: "{{ container_image }}"
+    volume:
+      - "{{ data_path }}:/home/rally/.rally"
+    state: started
+...
