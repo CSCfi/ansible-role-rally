@@ -1,6 +1,6 @@
 ---
 # Install method can be 'package' (default) or 'container' (and others if defined as ${method}_installation.yml in the tasks folder)
-install_method: package
+rally_install_method: package
 
 # Containers variables:
 container_image: xrally/xrally-openstack
