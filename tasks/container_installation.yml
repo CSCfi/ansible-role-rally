@@ -1,4 +1,11 @@
 ---
+- name: Ensure Podman is installed
+  package:
+    name:
+      - podman
+      - podman-docker
+      - python3-podman
+
 - name: Ensure data path directory exists
   file:
     path: "{{ data_path }}"
