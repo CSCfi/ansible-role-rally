@@ -9,7 +9,7 @@
 - name: Ensure data path volume exists
   containers.podman.podman_volume:
     state: present
-    name: "{{ data_path }}"
+    name: "rally_volume"
 
 - name: Run Rally container
   containers.podman.podman_container:
@@ -17,6 +17,6 @@
     command: 'deployment create'
     image: "{{ container_image }}"
     volume:
-      - "{{ data_path }}:/home/rally/.rally"
+      - "rally_volume:/home/rally/.rally"
     state: started
 ...
