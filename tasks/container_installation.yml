@@ -23,8 +23,8 @@
 # docker run -v /var/lib/rally_container:/home/rally/.rally xrally/xrally db create
 - name: Initialize database for Rally
   containers.podman.podman_container:
+    #name: "{{ container_name }}"
     command: 'db create'
-    name: "{{ container_name }}"
     image: "{{ container_image }}"
     volume:
       - "{{ data_path }}:/home/rally/.rally"
@@ -34,6 +34,7 @@
 - name: Run Rally container
   containers.podman.podman_container:
     name: "{{ container_name }}"
+    command: 'deployment create'
     image: "{{ container_image }}"
     volume:
       - "{{ data_path }}:/home/rally/.rally"
