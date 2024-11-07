@@ -14,9 +14,10 @@
 - name: Run Rally container
   containers.podman.podman_container:
     name: "{{ container_name }}"
-    command: 'deployment create'
+    command: "deployment create --name {{ item }}"
     image: "{{ container_image }}"
     volume:
       - "rally_volume:/home/rally/.rally"
     state: started
+  with: "{{ rally_deployments}}"
 ...

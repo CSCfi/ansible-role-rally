@@ -5,6 +5,8 @@ rally_install_method: package
 # Containers variables:
 container_image: xrally/xrally-openstack
 container_name: rally
+rally_deployments:
+  - dev_test
 
 # Rally tempest verifier configuration
 # Most tempest verifier configurations are per-verifier. Some, including these
