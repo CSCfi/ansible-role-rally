@@ -19,5 +19,5 @@
     volume:
       - "rally_volume:/home/rally/.rally"
     state: started
-  with: "{{ rally_deployments}}"
+  loop: "{{ rally_deployments}}"
 ...
