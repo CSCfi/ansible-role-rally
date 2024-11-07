@@ -5,6 +5,8 @@ rally_install_method: package
 # Containers variables:
 container_image: xrally/xrally-openstack
 container_name: rally
+data_path_is_volume: true # if it is not a volume in data_path you need to define the folder and then run db creation
+data_path: rally_volume
 
 # Rally tempest verifier configuration
 # Most tempest verifier configurations are per-verifier. Some, including these
