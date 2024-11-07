@@ -6,30 +6,10 @@
       - podman-docker
       - python3-podman
 
-- name: Ensure data path directory exists
-  file:
-    state: directory
-    path: "{{ data_path }}"
-    mode: '0640'
-    owner: 65500
-  when: not data_path_is_volume
-
 - name: Ensure data path volume exists
   containers.podman.podman_volume:
     state: present
     name: "{{ data_path }}"
-  when: data_path_is_volume
-
-# docker run -v /var/lib/rally_container:/home/rally/.rally xrally/xrally db create
-- name: Initialize database for Rally
-  containers.podman.podman_container:
-    #name: "{{ container_name }}"
-    command: 'db create'
-    image: "{{ container_image }}"
-    volume:
-      - "{{ data_path }}:/home/rally/.rally"
-    state: started
-  when: not data_path_is_volume
 
 - name: Run Rally container
   containers.podman.podman_container:
