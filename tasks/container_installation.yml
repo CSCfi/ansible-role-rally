@@ -40,7 +40,7 @@
     name: /home/rally/rally/etc/rally/rally.conf
     owner: 65500
 
-- name: Rally configure swift operator role
+- name: Rally configure swift operator role (container)
   ini_file:
     path: "/home/rally/rally/etc/rally/rally.conf"
     section: openstack
@@ -48,8 +48,7 @@
     value: "{{ rally_tempest_swift_operator_role }}"
   when: rally_tempest_swift_operator_role is defined
 
-- name: Rally configure swift reseller admin role
-
+- name: Rally configure swift reseller admin role (container)
   ini_file:
     path: "/home/rally/rally/etc/rally/rally.conf"
     section: openstack
