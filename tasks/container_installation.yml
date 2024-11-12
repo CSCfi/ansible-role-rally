@@ -1,4 +1,8 @@
 ---
+- name: Set Rally configuration file variable
+  set_fact:
+    rally_config_file: /home/rally/.rally/rally.conf
+
 - name: Ensure Podman is installed
   package:
     name:
@@ -6,10 +10,34 @@
       - podman-docker
       - python3-podman
 
-- name: Ensure data path exists
+- name: Ensure Rally home exists
   file:
     state: directory
     name: /home/rally
+    owner: 65500
+
+- name: Ensure Rally/rally exists
+  file:
+    state: directory
+    name: /home/rally/rally
+    owner: 65500
+
+- name: Ensure Rally/rally/etc exists
+  file:
+    state: directory
+    name: /home/rally/rally/etc
+    owner: 65500
+
+- name: Ensure Rally/rally/etc/rally exists
+  file:
+    state: directory
+    name: /home/rally/rally/etc/rally
+    owner: 65500
+
+- name: Ensure rally.conf exists
+  file:
+    state: directory
+    name: /home/rally/rally/etc/rally/rally.conf
     owner: 65500
 
 - name: Run Rally container to create database
@@ -19,5 +47,6 @@
     image: "{{ container_image }}"
     volume:
       - "/home/rally:/home/rally/.rally"
+      - "/home/rally/rally/etc/rally/rally.conf:/home/rally/.rally/rally.conf"
     state: started
 ...
