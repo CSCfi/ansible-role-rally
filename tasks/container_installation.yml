@@ -6,10 +6,11 @@
       - podman-docker
       - python3-podman
 
-- name: Ensure data path volume exists
-  containers.podman.podman_volume:
-    state: present
-    name: "rally_volume"
+- name: Ensure data path exists
+  file:
+    state: directory
+    name: /home/rally
+    owner: 65500
 
 - name: Run Rally container
   containers.podman.podman_container:
@@ -17,7 +18,7 @@
     command: "deployment create --name {{ item }}"
     image: "{{ container_image }}"
     volume:
-      - "rally_volume:/home/rally/.rally"
+      - "/home/rally:/home/rally/.rally"
     state: started
   loop: "{{ rally_deployments}}"
 ...
