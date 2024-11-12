@@ -12,13 +12,4 @@
     name: /home/rally
     owner: 65500
 
-- name: Run Rally container
-  containers.podman.podman_container:
-    name: "{{ container_name }}"
-    command: "deployment create --name {{ item }}"
-    image: "{{ container_image }}"
-    volume:
-      - "/home/rally:/home/rally/.rally"
-    state: started
-  loop: "{{ rally_deployments}}"
 ...
