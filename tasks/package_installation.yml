@@ -134,26 +134,6 @@
     user: rally
   when: rally_verify_purger_cron_enabled
 
-- name: Rally configure swift operator role
-  become: True
-  become_user: rally
-  ini_file:
-    path: "/home/rally/rally/etc/rally/rally.conf"
-    section: openstack
-    option: swift_operator_role
-    value: "{{ rally_tempest_swift_operator_role }}"
-  when: rally_tempest_swift_operator_role is defined
-
-- name: Rally configure swift reseller admin role
-  become: True
-  become_user: rally
-  ini_file:
-    path: "/home/rally/rally/etc/rally/rally.conf"
-    section: openstack
-    option: "swift_reseller_admin_role"
-    value: "{{ rally_tempest_swift_reseller_admin_role }}"
-  when: rally_tempest_swift_reseller_admin_role is defined
-
 - name: Give rally a larger open file limit to support running bigger concurrent tasks
   pam_limits:
     domain: rally
