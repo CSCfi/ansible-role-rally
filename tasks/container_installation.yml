@@ -12,4 +12,12 @@
     name: /home/rally
     owner: 65500
 
+- name: Run Rally container to create database
+  containers.podman.podman_container:
+    name: "{{ container_name }}"
+    command: "db create"
+    image: "{{ container_image }}"
+    volume:
+      - "/home/rally:/home/rally/.rally"
+    state: started
 ...
