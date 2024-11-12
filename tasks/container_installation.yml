@@ -36,7 +36,7 @@
 
 - name: Ensure rally.conf exists
   file:
-    state: directory
+    state: touch
     name: /home/rally/rally/etc/rally/rally.conf
     owner: 65500
 
