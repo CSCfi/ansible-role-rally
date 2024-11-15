@@ -10,6 +10,24 @@
       - podman-docker
       - python3-podman
 
+- name: Create group for Rally
+  group:
+    name: rally
+    gid: 65500
+    state: present
+    system: yes
+
+- name: Create user for Rally
+  user:
+    name: rally
+    uid: 65500
+    groups: rally
+    shell: /bin/bash
+    state: present
+    system: yes
+    createhome: yes
+    home: /home/rally
+
 - name: Ensure Rally home exists
   file:
     state: directory
