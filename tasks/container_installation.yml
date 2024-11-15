@@ -62,6 +62,7 @@
     command: "db create"
     image: "{{ container_image }}"
     volume:
+      - "/home/rally/tmp:/tmp"
       - "/home/rally:/home/rally/.rally"
       - "/home/rally/rally/etc/rally/rally.conf:/home/rally/.rally/rally.conf"
     state: started
