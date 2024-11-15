@@ -58,7 +58,7 @@
 
 - name: Run Rally container to create database
   containers.podman.podman_container:
-    name: "{{ container_name }}"
+    name: "db_create_{{ container_name }}"
     command: "db create"
     image: "{{ container_image }}"
     volume:
