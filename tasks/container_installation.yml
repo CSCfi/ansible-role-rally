@@ -16,6 +16,12 @@
     name: /home/rally
     owner: 65500
 
+- name: Ensure Rally/tmp exists
+  file:
+    state: directory
+    name: /home/rally/tmp
+    owner: 65500
+
 - name: Ensure Rally/rally exists
   file:
     state: directory
