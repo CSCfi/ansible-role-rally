@@ -94,5 +94,6 @@
 - name: Ensure Rally bin folder exists
   file:
     path: /home/rally/rally/bin
+    state: directory
     owner: rally
 ...
