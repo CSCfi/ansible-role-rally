@@ -108,4 +108,13 @@
     path: /home/rally/deployments
     state: directory
     owner: rally
+
+- name: store tempest configs in a persistent place
+  file:
+    state: directory
+    path: /home/rally/tempest_configs
+    mode: 0700
+    owner: rally
+    group: rally
+
 ...
