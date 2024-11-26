@@ -102,4 +102,10 @@
     path: /home/rally/rally/bin
     state: directory
     owner: rally
+
+- name: Ensure Rally deployments folder exists
+  file:
+    path: /home/rally/deployments
+    state: directory
+    owner: rally
 ...
