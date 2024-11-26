@@ -93,7 +93,7 @@
 
 - name: Ensure Rally .rally folder exists
   file:
-    path: /home/rally/rally/bin
+    path: /home/rally/.rally
     state: directory
     owner: rally
 
