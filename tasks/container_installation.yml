@@ -91,6 +91,12 @@
       - "/home/rally/rally/etc/rally/rally.conf:/home/rally/.rally/rally.conf"
     state: started
 
+- name: Ensure Rally .rally folder exists
+  file:
+    path: /home/rally/rally/bin
+    state: directory
+    owner: rally
+
 - name: Ensure Rally bin folder exists
   file:
     path: /home/rally/rally/bin
