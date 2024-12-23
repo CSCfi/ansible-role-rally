@@ -82,7 +82,7 @@
 
 - name: Build custom container
   shell:
-    command: podman built -t {{ container_name }} {{ custom_container_repo }}
+    cmd: podman built -t {{ container_name }} {{ custom_container_repo }}
   when:
     - custom_container_repo is defined
     - custom_container_repo != ''
