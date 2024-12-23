@@ -83,6 +83,7 @@
 - name: Build custom container
   shell:
     cmd: podman build -t {{ container_name }} {{ custom_container_repo }}
+  environment: "{{proxy_env}}"
   when:
     - custom_container_repo is defined
     - custom_container_repo != ''
