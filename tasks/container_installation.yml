@@ -80,6 +80,13 @@
     value: "{{ rally_tempest_swift_reseller_admin_role }}"
   when: rally_tempest_swift_reseller_admin_role is defined
 
+- name: Build custom container
+  shell:
+    command: podman built -t {{ container_name }} {{ custom_container_repo }}
+  when:
+    - custom_container_repo is defined
+    - custom_container_repo != ''
+
 - name: Run Rally container to create database
   containers.podman.podman_container:
     name: "db_create_{{ container_name }}"

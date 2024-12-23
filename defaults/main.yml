@@ -3,6 +3,7 @@
 rally_install_method: package
 
 # Containers variables:
+custom_container_repo: ''
 container_image: xrally/xrally-openstack
 container_name: rally
 
