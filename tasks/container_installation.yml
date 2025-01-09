@@ -80,10 +80,21 @@
     value: "{{ rally_tempest_swift_reseller_admin_role }}"
   when: rally_tempest_swift_reseller_admin_role is defined
 
-- name: Clone repo for container
+- name: Clone Rally repo for container
+  git:
+    repo: "{{ custom_rally_container_repo }}"
+    dest: /tmp/rally_container
+    version: "{{ custom_rally_container_repo_branch }}"
+    update: true
+    force: true
+  when:
+    - custom_container_repo is defined
+    - custom_container_repo != ''
+
+- name: Clone Rally Openstack repo for container
   git:
     repo: "{{ custom_container_repo }}"
-    dest: /tmp/rally_container
+    dest: /tmp/rally_openstack_container
     version: "{{ custom_container_repo_branch }}"
     update: true
     force: true
@@ -91,9 +102,17 @@
     - custom_container_repo is defined
     - custom_container_repo != ''
 
-- name: Build custom container
+- name: Build custom Rally container
   shell:
-    cmd: podman build -t {{ container_name }} /tmp/rally_container
+    cmd: podman build -t {{ rally_container_image }} /tmp/rally_container
+  environment: "{{proxy_env}}"
+  when:
+    - custom_container_repo is defined
+    - custom_container_repo != ''
+
+- name: Build custom Rally Openstack container
+  shell:
+    cmd: podman build -t {{ container_name }} /tmp/rally_openstack_container
   environment: "{{proxy_env}}"
   when:
     - custom_container_repo is defined
