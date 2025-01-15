@@ -122,7 +122,7 @@
   containers.podman.podman_container:
     name: "db_create_{{ container_name }}"
     command: "db create"
-    image: "{{ container_image }}:{{ rally_install_version }}"
+    image: "{{ container_image }}:{{ rally_openstack_install_version }}"
     volume:
       - "/home/rally/tmp:/tmp"
       - "/home/rally:/home/rally/.rally"
