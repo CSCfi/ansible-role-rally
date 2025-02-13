@@ -129,6 +129,12 @@
       - "/home/rally/rally/etc/rally/rally.conf:/home/rally/.rally/rally.conf"
     state: started
 
+- name: Run Openstack client container to create database
+  containers.podman.podman_container:
+    name: "openstack_client"
+    image: "{{ openstack_container_image }}"
+    state: started
+
 - name: Ensure Rally .rally folder exists
   file:
     path: /home/rally/.rally
