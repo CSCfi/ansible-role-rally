@@ -32,37 +32,37 @@
   file:
     state: directory
     name: /home/rally
-    owner: 65500
+    owner: 'rally'
 
 - name: Ensure Rally/tmp exists
   file:
     state: directory
     name: /home/rally/tmp
-    owner: 65500
+    owner: 'rally'
 
 - name: Ensure Rally/rally exists
   file:
     state: directory
     name: /home/rally/rally
-    owner: 65500
+    owner: 'rally'
 
 - name: Ensure Rally/rally/etc exists
   file:
     state: directory
     name: /home/rally/rally/etc
-    owner: 65500
+    owner: 'rally'
 
 - name: Ensure Rally/rally/etc/rally exists
   file:
     state: directory
     name: /home/rally/rally/etc/rally
-    owner: 65500
+    owner: 'rally'
 
 - name: Ensure rally.conf exists
   file:
     state: touch
     name: /home/rally/rally/etc/rally/rally.conf
-    owner: 65500
+    owner: 'rally'
 
 - name: Rally configure swift operator role (container)
   ini_file:
