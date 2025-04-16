@@ -1,5 +1,5 @@
-# AlmaLinux version 8
-FROM almalinux:8
+# AlmaLinux version 9
+FROM almalinux:9
 MAINTAINER Antonio J. Delgado <antonio.delgado@csc.fi>
 RUN yum clean all && \
     yum -y install epel-release && \

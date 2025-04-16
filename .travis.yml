@@ -10,7 +10,7 @@ jobs:
   fast_finish: true
 
 env:
-  - IMAGE_BUILD_PLATFORM=pip-almalinux8
+  - IMAGE_BUILD_PLATFORM=pip-almalinux9
   - IMAGE_BUILD_PLATFORM=pip-ubuntu
 install:
   - npm install -g validate-dockerfile
