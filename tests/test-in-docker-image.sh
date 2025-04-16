@@ -2,12 +2,15 @@
 
 SOURCE="${BASH_SOURCE[0]}"
 RDIR="$( dirname "$SOURCE" )"
-SUDO=`which sudo 2> /dev/null`
+SUDO=$(which sudo 2> /dev/null)
 SUDO_OPTION=""
 #SUDO_OPTION="--sudo"
 OS_TYPE=${1:-}
 OS_VERSION=${2:-}
 ANSIBLE_VERSION=${3:-}
+
+export OS_VERSION
+export ANSIBLE_VERSION
 
 ANSIBLE_VAR=""
 ANSIBLE_INVENTORY="tests/inventory"
@@ -16,8 +19,10 @@ ANSIBLE_PLAYBOOk="tests/test.yml"
 ANSIBLE_LOG_LEVEL="-vvv"
 APACHE_CTL="apache2ctl"
 
+export APACHE_CTL
+
 # if there wasn't sudo then ansible couldn't use it
-if [ "x$SUDO" == "x" ];then
+if [ -z "${SUDO}" ];then
     SUDO_OPTION=""
 fi
 
@@ -26,13 +31,13 @@ if [ "${OS_TYPE}" == "stable-centos7-puppet5" ];then
   ANSIBLE_PLAYBOOk="tests/test5.yml"
 fi
 
-ANSIBLE_EXTRA_VARS=""
-if [ "${ANSIBLE_VAR}x" == "x" ];then
-    ANSIBLE_EXTRA_VARS=" -e \"${ANSIBLE_VAR}\" "
+ANSIBLE_EXTRA_VARS=()
+if [ -n "${ANSIBLE_VAR}" ];then
+    ANSIBLE_EXTRA_VARS=(-e "${ANSIBLE_VAR}")
 fi
 
 
-cd $RDIR/..
+cd "${RDIR}/.." || exit 1
 printf "[defaults]\nroles_path = ../:roles\ncallback_whitelist = profile_tasks" > ansible.cfg
 printf "" > ssh.config
 
@@ -53,7 +58,10 @@ function install_ansible_devel() {
 
 echo "TEST: building ansible"
 
-yum -y install PyYAML python-paramiko python-jinja2 python-httplib2 rpm-build make python2-devel asciidoc patch wget 2>&1 >/dev/null || (echo "Could not install ansible yum dependencies" && exit 2 )
+if ! yum -y install PyYAML python-paramiko python-jinja2 python-httplib2 rpm-build make python2-devel asciidoc patch wget 2>&1 >/dev/null; then
+    echo "Could not install ansible yum dependencies"
+    exit 2
+fi
 rm -Rf ansible
 git clone https://github.com/ansible/ansible --recursive ||(echo "Could not clone ansible from Github" && exit 2 )
 cd ansible
@@ -61,7 +69,7 @@ cd ansible
 #git checkout 07d0d2720c73816e1206882db7bc856087eb5c3f
 # because systemctl and systemd
 git checkout 589971fe7ef78ea8bb41fb9ae6cd19cb8e277371
-make rpm 2>&1 >/dev/null
+make rpm 2>&1 > /dev/null
 rpm -Uvh ./rpm-build/ansible-*.noarch.rpm ||(echo "Could not install built ansible devel rpms" && exit 2 )
 cd ..
 rm -Rf ansible
@@ -102,21 +110,21 @@ function test_playbook_syntax(){
 }
 
 function test_playbook_check(){
-    echo "TEST: ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOk} ${ANSIBLE_LOG_LEVEL} --connection=local ${SUDO_OPTION} ${ANSIBLE_EXTRA_VARS} --check"
+    echo "TEST: ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOk} ${ANSIBLE_LOG_LEVEL} --connection=local ${SUDO_OPTION} ${ANSIBLE_EXTRA_VARS[*]} --check"
 
-    ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOk} ${ANSIBLE_LOG_LEVEL} --connection=local ${SUDO_OPTION} ${ANSIBLE_EXTRA_VARS} --check ||(echo "playbook check failed" && exit 2 )
+    ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOk} ${ANSIBLE_LOG_LEVEL} --connection=local "${SUDO_OPTION}" "${ANSIBLE_EXTRA_VARS[@]}" --check ||(echo "playbook check failed" && exit 2 )
 
 
 }
 
 function test_playbook(){
-    echo "TEST: ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOk} ${ANSIBLE_LOG_LEVEL} --connection=local ${SUDO_OPTION} ${ANSIBLE_EXTRA_VARS}"
+    echo "TEST: ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOk} ${ANSIBLE_LOG_LEVEL} --connection=local ${SUDO_OPTION} ${ANSIBLE_EXTRA_VARS[*]}"
 
-    ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOk} ${ANSIBLE_LOG_LEVEL} --connection=local ${SUDO_OPTION} ${ANSIBLE_EXTRA_VARS} ||(echo "first ansible run failed" && exit 2 )
+    ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOk} ${ANSIBLE_LOG_LEVEL} --connection=local "${SUDO_OPTION}" "${ANSIBLE_EXTRA_VARS[@]}" ||(echo "first ansible run failed" && exit 2 )
 
 
     echo "TEST: idempotence test! Same as previous but now grep for changed=0.*failed=0"
-    ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOk} ${ANSIBLE_LOG_LEVEL} --connection=local ${SUDO_OPTION} ${ANSIBLE_EXTRA_VARS} || grep -q 'changed=0.*failed=0' && (echo 'Idempotence test: pass' ) || (echo 'Idempotence test: fail' && exit 1)
+    ansible-playbook -i ${ANSIBLE_INVENTORY} ${ANSIBLE_PLAYBOOk} ${ANSIBLE_LOG_LEVEL} --connection=local "${SUDO_OPTION}" "${ANSIBLE_EXTRA_VARS[@]}" || grep -q 'changed=0.*failed=0' && (echo 'Idempotence test: pass' ) || (echo 'Idempotence test: fail' && exit 1)
 }
 function extra_tests(){
 
