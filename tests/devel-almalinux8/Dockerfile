@@ -1,6 +1,6 @@
 # AlmaLinux version 8
 FROM almalinux:8
-MAINTAINER James Cuzella <james.cuzella@lyraphase.com>
+MAINTAINER Antonio J. Delgado <antonio.delgado@csc.fi>
 RUN yum clean all && \
     yum -y install epel-release && \
     yum makecache all && \
