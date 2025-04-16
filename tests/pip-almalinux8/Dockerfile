@@ -4,7 +4,7 @@ MAINTAINER Antonio J. Delgado <antonio.delgado@csc.fi>
 RUN yum clean all && \
     yum -y install epel-release && \
     yum -y groupinstall "Development tools" && \
-    yum -y install python-devel MySQL-python sshpass && \
+    yum -y install python3.11-devel python3-mysql sshpass && \
     yum -y install acl sudo && \
     sed -i -e 's/^Defaults.*requiretty/Defaults    !requiretty/' -e 's/^%wheel.*ALL$/%wheel    ALL=(ALL)    NOPASSWD: ALL/' /etc/sudoers && \
     yum -y install PyYAML python-jinja2 python-httplib2 python-keyczar python-paramiko python-setuptools git python-pip \
