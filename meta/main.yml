@@ -4,11 +4,12 @@ galaxy_info:
   description: Install and configure OpenStack Rally
   company: CSC - IT Center for Science Ltd.
   license: MIT
-  min_ansible_version: 2.2
+  min_ansible_version: "2.2"
   platforms:
   - name: EL
     versions:
-    - 7
+    - "7"
+    - "8"
   galaxy_tags:
     - OpenStack
     - testing

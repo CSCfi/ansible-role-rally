@@ -1,5 +1,5 @@
-# Latest version of centos
-FROM centos:centos7
+# AlmaLinux version 8
+FROM almalinux:8
 MAINTAINER James Cuzella <james.cuzella@lyraphase.com>
 RUN yum clean all && \
     yum -y install epel-release && \
