@@ -10,7 +10,7 @@ container_name: rally
 rally_container_image: xrally/xrally
 custom_rally_container_repo: ''
 custom_rally_container_repo_branch: ''
-openstack_container_image: openstacktools/openstack-client
+openstack_container_image: docker.io/openstacktools/openstack-client
 
 # Rally tempest verifier configuration
 # Most tempest verifier configurations are per-verifier. Some, including these
