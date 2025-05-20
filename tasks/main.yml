@@ -4,6 +4,11 @@
     rally_user: 'rally'
   when: rally_install_method == 'package'
 
+- name: Set Rally user according to install method for containers
+  set_fact:
+    rally_user: 'root'
+  when: rally_install_method == 'container'
+
 - include_tasks: "{{ rally_install_method }}_installation.yml"
 - include_tasks: "configure_rally.yml"
 ...
