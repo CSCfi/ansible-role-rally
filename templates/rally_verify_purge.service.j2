@@ -1,0 +1,8 @@
+[Unit]
+Description=Purge Rally verify runs
+After=syslog.target network.target auditd.service
+
+[Service]
+Type=oneshot
+User={{ rally_user }}
+ExecStart=/usr/bin/sh -c 'source /home/rally/rally/bin/activate; python /home/rally/rally/bin/rally_verify_purger.py {{ rally_verify_purger_arguments }} {% if rally_install_method == 'container' %} -c csc_rally{% endif %}'

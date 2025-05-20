@@ -1,4 +1,9 @@
 ---
+- name: Set Rally user according to install method for package
+  set_fact:
+    rally_user: 'rally'
+  when: rally_install_method == 'package'
+
 - include_tasks: "{{ rally_install_method }}_installation.yml"
 - include_tasks: "configure_rally.yml"
 ...

@@ -24,6 +24,36 @@
 #     user: rally
 #   when: rally_verify_purger_cron_enabled
 
+- name: Create systemd service unit
+  template:
+    src: rally_verify_purge.service.j2
+    dest: /etc/systemd/system/rally_verify_purge.service
+    mode: 0600
+  when: rally_verify_purger_cron_enabled
+
+- name: Enable tempest run service
+  systemd:
+    name: "rally_verify_purge.service"
+    enabled: true
+    masked: false
+    daemon_reload: true
+  when: rally_verify_purger_cron_enabled
+
+- name: Create systemd timer unit
+  copy:
+    src: rally_verify_purge.timer
+    dest: /etc/systemd/system/rally_verify_purge.timer
+    mode: 0600
+  when: rally_verify_purger_cron_enabled
+
+- name: Enable tempest run timer
+  systemd:
+    name: "rally_verify_purge.timer"
+    enabled: true
+    masked: false
+    daemon_reload: true
+  when: rally_verify_purger_cron_enabled
+
 - name: Rally configure swift operator role
   become: True
   become_user: rally
