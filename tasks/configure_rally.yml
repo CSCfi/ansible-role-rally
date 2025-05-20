@@ -50,6 +50,7 @@
   systemd:
     name: "rally_verify_purge.timer"
     enabled: true
+    state: started
     masked: false
     daemon_reload: true
   when: rally_verify_purger_cron_enabled
