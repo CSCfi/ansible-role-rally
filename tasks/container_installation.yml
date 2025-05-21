@@ -9,6 +9,7 @@
       - podman
       - podman-docker
       - python3-podman
+      - python3
 
 - name: Create group for Rally
   group:

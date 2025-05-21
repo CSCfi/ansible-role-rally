@@ -32,7 +32,8 @@ PARSER.add_argument('-d', dest='DEBUG', action='store_true',
 PARSER.add_argument('-b', dest='BATCH', type=int,
                     default=5,
                     help='For every "modulus 5" verify that we purge, sleep 5 seconds')
-PARSER.add_argument('-c', dest='RALLY_CMD', type=int,
+PARSER.add_argument('-c', dest='RALLY_CMD',
+                    type=str,
                     default='rally',
                     help='Rally command')
 
@@ -57,7 +58,7 @@ P = subprocess.Popen(
         shell=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE).communicate()[0]
-RALLY_VERIFY_LIST = P.split("\n")
+RALLY_VERIFY_LIST = P.split(b"\n")
 # Get rid of empty strings (because above we split on newline)
 RALLY_VERIFY_LIST2 = [x for x in RALLY_VERIFY_LIST if x]
 
