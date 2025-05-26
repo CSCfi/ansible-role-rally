@@ -1,0 +1,9 @@
+[Unit]
+Description=Purge Rally verify runs
+
+[Timer]
+OnCalendar=*-*-* 01:00:00
+Unit=rally_verify_purge.service
+
+[Install]
+WantedBy=timers.target

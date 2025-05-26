@@ -1,0 +1,85 @@
+---
+- name: Update bashrc to automatically source rally env
+  lineinfile:
+    dest: /home/rally/.bashrc
+    line: "source /home/rally/rally/bin/activate"
+    owner: rally
+    state: present
+    insertafter: EOF
+    create: True
+  when: rally_install_method == 'package'
+
+- name: copy in rally_verify_purger.py
+  copy:
+    src: rally_verify_purger.py
+    dest: /home/rally/rally/bin/rally_verify_purger.py
+    owner: rally
+    mode: 0640
+
+- name: Create systemd service unit
+  template:
+    src: rally_verify_purge.service.j2
+    dest: /etc/systemd/system/rally_verify_purge.service
+    mode: 0600
+  when: rally_verify_purger_cron_enabled
+
+- name: Enable tempest run service
+  systemd:
+    name: "rally_verify_purge.service"
+    enabled: true
+    masked: false
+    daemon_reload: true
+  when: rally_verify_purger_cron_enabled
+
+- name: Create systemd timer unit
+  copy:
+    src: rally_verify_purge.timer
+    dest: /etc/systemd/system/rally_verify_purge.timer
+    mode: 0600
+  when: rally_verify_purger_cron_enabled
+
+- name: Enable tempest run timer
+  systemd:
+    name: "rally_verify_purge.timer"
+    enabled: true
+    state: started
+    masked: false
+    daemon_reload: true
+  when: rally_verify_purger_cron_enabled
+
+- name: Rally configure swift operator role
+  become: True
+  become_user: rally
+  ini_file:
+    path: "/home/rally/rally/etc/rally/rally.conf"
+    section: openstack
+    option: swift_operator_role
+    value: "{{ rally_tempest_swift_operator_role }}"
+  when: rally_tempest_swift_operator_role is defined
+
+- name: Rally configure swift reseller admin role
+  become: True
+  become_user: rally
+  ini_file:
+    path: "/home/rally/rally/etc/rally/rally.conf"
+    section: openstack
+    option: "swift_reseller_admin_role"
+    value: "{{ rally_tempest_swift_reseller_admin_role }}"
+  when: rally_tempest_swift_reseller_admin_role is defined
+
+- name: Give rally a larger open file limit to support running bigger concurrent tasks
+  pam_limits:
+    domain: rally
+    limit_type: "{{ item }}"
+    limit_item: nofile
+    value: '500000'
+  with_items:
+    - hard
+    - soft
+
+- name: Add logrotate.d config for tempest.log
+  become: true
+  tags: logrotate
+  copy:
+     src=rallyverifiers-logrotate dest=/etc/logrotate.d/rallyverifiers-logrotate
+...

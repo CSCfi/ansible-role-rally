@@ -1,0 +1,165 @@
+---
+- name: Set Rally configuration file variable
+  set_fact:
+    rally_config_file: /home/rally/.rally/rally.conf
+
+- name: Ensure Podman is installed
+  package:
+    name:
+      - podman
+      - podman-docker
+      - python3-podman
+      - python3
+
+- name: Create group for Rally
+  group:
+    name: rally
+    gid: 65500
+    state: present
+    system: yes
+
+- name: Create user for Rally
+  user:
+    name: rally
+    uid: 65500
+    groups: rally
+    shell: /bin/bash
+    state: present
+    system: yes
+    createhome: yes
+    home: /home/rally
+
+- name: Ensure Rally home exists
+  file:
+    state: directory
+    name: /home/rally
+    owner: 'rally'
+
+- name: Ensure Rally/tmp exists
+  file:
+    state: directory
+    name: /home/rally/tmp
+    owner: 'rally'
+
+- name: Ensure Rally/rally exists
+  file:
+    state: directory
+    name: /home/rally/rally
+    owner: 'rally'
+
+- name: Ensure Rally/rally/etc exists
+  file:
+    state: directory
+    name: /home/rally/rally/etc
+    owner: 'rally'
+
+- name: Ensure Rally/rally/etc/rally exists
+  file:
+    state: directory
+    name: /home/rally/rally/etc/rally
+    owner: 'rally'
+
+- name: Ensure rally.conf exists
+  file:
+    state: touch
+    name: /home/rally/rally/etc/rally/rally.conf
+    owner: 'rally'
+
+- name: Rally configure swift operator role (container)
+  ini_file:
+    path: "/home/rally/rally/etc/rally/rally.conf"
+    section: openstack
+    option: swift_operator_role
+    value: "{{ rally_tempest_swift_operator_role }}"
+  when: rally_tempest_swift_operator_role is defined
+
+- name: Rally configure swift reseller admin role (container)
+  ini_file:
+    path: "/home/rally/rally/etc/rally/rally.conf"
+    section: openstack
+    option: "swift_reseller_admin_role"
+    value: "{{ rally_tempest_swift_reseller_admin_role }}"
+  when: rally_tempest_swift_reseller_admin_role is defined
+
+- name: Clone Rally repo for container
+  git:
+    repo: "{{ custom_rally_container_repo }}"
+    dest: /tmp/rally_container
+    version: "{{ custom_rally_container_repo_branch }}"
+    update: true
+    force: true
+  when:
+    - custom_container_repo is defined
+    - custom_container_repo != ''
+
+- name: Clone Rally Openstack repo for container
+  git:
+    repo: "{{ custom_container_repo }}"
+    dest: /tmp/rally_openstack_container
+    version: "{{ custom_container_repo_branch }}"
+    update: true
+    force: true
+  when:
+    - custom_container_repo is defined
+    - custom_container_repo != ''
+
+- name: Build custom Rally container
+  shell:
+    cmd: podman build -t {{ rally_container_image }} /tmp/rally_container
+  environment: "{{proxy_env}}"
+  when:
+    - custom_container_repo is defined
+    - custom_container_repo != ''
+
+- name: Build custom Rally Openstack container
+  shell:
+    cmd: podman build -t {{ container_name }} /tmp/rally_openstack_container
+  environment: "{{proxy_env}}"
+  when:
+    - custom_container_repo is defined
+    - custom_container_repo != ''
+
+- name: Run Rally container to create database
+  containers.podman.podman_container:
+    name: "db_create_{{ container_name }}"
+    command: "db create"
+    image: "{{ container_image }}:{{ rally_openstack_install_version }}"
+    volume:
+      - "/home/rally/tmp:/tmp"
+      - "/home/rally:/home/rally/.rally"
+      - "/home/rally/rally/etc/rally/rally.conf:/home/rally/.rally/rally.conf"
+    state: started
+  environment: "{{proxy_env}}"
+
+- name: Run Openstack client container to create database
+  containers.podman.podman_container:
+    name: "openstack_client"
+    image: "{{ openstack_container_image }}"
+    state: started
+
+- name: Ensure Rally .rally folder exists
+  file:
+    path: /home/rally/.rally
+    state: directory
+    owner: rally
+
+- name: Ensure Rally bin folder exists
+  file:
+    path: /home/rally/rally/bin
+    state: directory
+    owner: rally
+
+- name: Ensure Rally deployments folder exists
+  file:
+    path: /home/rally/deployments
+    state: directory
+    owner: rally
+
+- name: store tempest configs in a persistent place
+  file:
+    state: directory
+    path: /home/rally/tempest_configs
+    mode: 0700
+    owner: rally
+    group: rally
+...
